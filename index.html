@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./jquery-1.7.2.min.js"></script>
+    <style>
+        /* html::-webkit-scrollbar { width: 0;} */
+        .scroll-box {
+            user-select: none;
+            position: relative;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+        }
+        .scroll-content {
+            width: 220px;
+            height: 200px;
+            overflow: auto;
+        }
+        .scroll-content .content{
+            margin: 0;
+            padding-right: 30px;
+        }
+        .scroll-bar{
+            position: absolute;
+            top:0;
+            right: 5px;
+            width: 5px;
+            height: 100%;
+            background: #000;
+        }
+        .bar {
+            position: absolute;
+            right: -4px;
+            bottom: -14px;
+            width: 10px;
+            height: 10px; 
+            background: #fff;
+            border-radius: 10px;
+            border: 2px solid #000;
+        }
+        .active-bar{
+            position: absolute;
+            top:0;
+            right: 0;
+            width: 5px;
+            height: 0;
+            background: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-box">
+        <div class="scroll-content">
+            <div class="content">的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高的塑料袋发过来的减肥看过来打开房价高</div>
+        </div>
+        <div class="scroll-bar">
+            <div class="active-bar"><div class="bar"></div></div>
+        </div>
+    </div>
+    <script>
+        var oDevice = 'ontouchstart' in window,
+        startEvent = oDevice ? 'touchstart' : 'mousedown',
+        moveEvent = oDevice ? 'touchmove' : 'mousemove',
+        endEvent = oDevice ? 'touchend' : 'mouseup';
+        var nScrollBarH = 0, 
+        oDomScrollContent = $(".scroll-content"),
+        nDivHeight = oDomScrollContent.height(),
+        maxH = nDivHeight-14, 
+        nScrollHeight = oDomScrollContent[0].scrollHeight;
+        
+        oDomScrollContent.scroll(function(){
+            var nScrollTop = $(this)[0].scrollTop;
+            nScrollBarH = nScrollTop * ((nDivHeight - 14) / (nScrollHeight - nDivHeight))
+            $(".active-bar").height(nScrollBarH)
+        });
+        var startpoint = {}, _nScrollBarH = 0;
+        
+        var fnTouchstart = function (e) {
+            if (e.originalEvent.changedTouches) {
+                var e = e.originalEvent.changedTouches[0]
+            }
+            _nScrollBarH = nScrollBarH
+            startpoint.y = e.clientY
+            $(document).bind(moveEvent, fnTouchmove)
+            $(document).bind(endEvent, fnTouchend)
+        }
+        var fnTouchmove = function (e) {
+            if (e.originalEvent.changedTouches) {
+                var e = e.originalEvent.changedTouches[0]
+            }
+            var moveY = e.clientY - startpoint.y
+            var nTempScrollBarH = _nScrollBarH + moveY
+            
+            if (nTempScrollBarH > maxH) {
+                nTempScrollBarH = maxH
+            } else if (nTempScrollBarH < 0) {
+                nTempScrollBarH = 0
+            }
+            nScrollTop = nTempScrollBarH / ((nDivHeight - 14) / (nScrollHeight - nDivHeight))
+            $(".scroll-content").scrollTop(nScrollTop)
+        }
+        var fnTouchend = function (e) {
+            $(document).unbind(moveEvent, fnTouchmove)
+            $(document).unbind(endEvent, fnTouchend)
+        }
+        $(".bar").bind(startEvent, fnTouchstart);
+    </script>
+</body>
+</html>
